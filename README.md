@@ -11,7 +11,7 @@
 # 🚀 ImpactGuru Mini CRM - Quick Start
 
 ## 1️⃣ Clone & Setup
-git clone https://github.com/yourusername/impactguru-mini-crm.git
+https://github.com/KhatalNikita12/Customer_Management_System
 cd impactguru-mini-crm
 cp .env.example .env
 composer install
