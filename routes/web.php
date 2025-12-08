@@ -28,13 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Customer routes
-    Route::resource('customers', CustomerController::class);
-    Route::get('/customers/export', [CustomerController::class, 'export'])->name('customers.export');
+     Route::get('/customers/export', [CustomerController::class, 'export'])->name('customers.export');
 
+    Route::resource('customers', CustomerController::class);
+   
     // Order routes
+     Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
+
     Route::resource('orders', OrderController::class);
-    Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
-});
+   });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,10 +50,12 @@ Route::get('/', function () {
 
 
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+  
 });
 
 require __DIR__.'/auth.php';

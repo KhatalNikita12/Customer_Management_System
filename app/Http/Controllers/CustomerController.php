@@ -33,19 +33,7 @@ class CustomerController extends Controller
         return view('customers.create');
     }
 
-    // public function store(StoreCustomerRequest $request)
-    // {
-    //     $data = $request->validated();
-
-    //     if ($request->hasFile('profile_image')) {
-    //         $data['profile_image'] = $request->file('profile_image')->store('customers', 'public');
-    //     }
-
-    //     Customer::create($data);
-
-    //     return redirect()->route('customers.index')
-    //         ->with('success', 'Customer created successfully.');
-    // }
+    
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -126,48 +114,163 @@ public function store(Request $request)
             ->with('success', 'Customer deleted successfully.');
     }
 
-    public function export(Request $request)
-    {
-        $format = $request->get('format', 'csv');
-        $customers = Customer::all();
-
-        if ($format === 'csv') {
-            return $this->exportCsv($customers);
-        } else {
-            return $this->exportPdf($customers);
-        }
+  public function export(Request $request)
+{
+    $format = $request->get('format', 'csv');
+    
+    $query = Customer::query();
+    
+    // Apply search if exists
+    if ($request->has('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+    
+    $customers = $query->get();
 
-    private function exportCsv($customers)
-    {
-        $filename = 'customers_' . date('Y-m-d') . '.csv';
-        $handle = fopen('php://output', 'w');
+    if ($format === 'csv') {
+        return $this->exportCsv($customers);
+    } else {
+        return $this->exportPdf($customers);
+    }
+}
 
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
 
-        fputcsv($handle, ['ID', 'Name', 'Email', 'Phone', 'Address', 'Created At']);
 
+private function exportPdf($customers)
+{
+    $html = '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Customers Report</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 3px solid #4F46E5;
+                padding-bottom: 10px;
+            }
+            h1 { 
+                color: #4F46E5;
+                margin: 0;
+                font-size: 28px;
+            }
+            .date { 
+                color: #666;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+            table { 
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th { 
+                background-color: #4F46E5;
+                color: white;
+                padding: 12px;
+                text-align: left;
+                font-size: 12px;
+                text-transform: uppercase;
+            }
+            td { 
+                border: 1px solid #ddd;
+                padding: 10px;
+                font-size: 11px;
+            }
+            tr:nth-child(even) { 
+                background-color: #f9fafb;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 10px;
+                color: #666;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }
+            .total {
+                background-color: #E0E7FF;
+                font-weight: bold;
+                text-align: right;
+                padding: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1> Customers Report</h1>
+            <p class="date">Generated on: ' . date('F d, Y \a\t H:i:s') . '</p>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">ID</th>
+                    <th style="width: 20%;">Name</th>
+                    <th style="width: 25%;">Email</th>
+                    <th style="width: 15%;">Phone</th>
+                    <th style="width: 25%;">Address</th>
+                    <th style="width: 10%;">Joined</th>
+                </tr>
+            </thead>
+            <tbody>';
+    
+    if ($customers->count() > 0) {
         foreach ($customers as $customer) {
-            fputcsv($handle, [
-                $customer->id,
-                $customer->name,
-                $customer->email,
-                $customer->phone,
-                $customer->address,
-                $customer->created_at,
-            ]);
+            $html .= '<tr>
+                <td>' . $customer->id . '</td>
+                <td><strong>' . htmlspecialchars($customer->name) . '</strong></td>
+                <td>' . htmlspecialchars($customer->email) . '</td>
+                <td>' . htmlspecialchars($customer->phone) . '</td>
+                <td>' . htmlspecialchars($customer->address) . '</td>
+                <td>' . $customer->created_at->format('M d, Y') . '</td>
+            </tr>';
         }
-
-        fclose($handle);
-        exit;
+        
+        $html .= '<tr>
+            <td colspan="5" class="total">Total Customers:</td>
+            <td class="total">' . $customers->count() . '</td>
+        </tr>';
+    } else {
+        $html .= '<tr>
+            <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                No customers found
+            </td>
+        </tr>';
     }
+    
+    $html .= '
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>Customer Management System Created By Nikita</p>
+            <p>This is a computer-generated report. No signature required.</p>
+        </div>
+    </body>
+    </html>';
 
-    private function exportPdf($customers)
-    {
-        // You'll need to install barryvdh/laravel-dompdf
-        // composer require barryvdh/laravel-dompdf
-        $pdf = \PDF::loadView('customers.pdf', compact('customers'));
-        return $pdf->download('customers_' . date('Y-m-d') . '.pdf');
+    $filename = 'customers_' . date('Y-m-d_His') . '.pdf';
+    
+    // Check if dompdf is installed
+    if (class_exists('\Barryvdh\DomPDF\Facade\Pdf')) {
+        $pdf = \PDF::loadHTML($html)->setPaper('a4', 'landscape');
+        return $pdf->download($filename);
     }
+    
+    // Fallback: Return as HTML (can be saved as PDF from browser)
+    return response($html)
+        ->header('Content-Type', 'text/html')
+        ->header('Content-Disposition', 'inline; filename="' . str_replace('.pdf', '.html', $filename) . '"');
+}
 }

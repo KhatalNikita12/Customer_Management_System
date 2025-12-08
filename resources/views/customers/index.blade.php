@@ -1,104 +1,4 @@
-<!-- <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Customers') }}
-            </h2>
-            <a href="{{ route('customers.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Add Customer
-            </a>
-        </div>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    
-                    <div class="flex justify-between mb-4">
-                        <form method="GET" action="{{ route('customers.index') }}" class="flex gap-2">
-                            <input type="text" name="search" placeholder="Search by name or email..." 
-                                   value="{{ request('search') }}"
-                                   class="border rounded px-3 py-2 w-64">
-                            <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded">Search</button>
-                            @if(request('search'))
-                                <a href="{{ route('customers.index') }}" class="bg-gray-300 px-4 py-2 rounded">Clear</a>
-                            @endif
-                        </form>
-
-                        <div class="flex gap-2">
-                            <a href="{{ route('customers.export', ['format' => 'csv']) }}" 
-                               class="bg-green-500 text-white px-4 py-2 rounded">Export CSV</a>
-                            <a href="{{ route('customers.export', ['format' => 'pdf']) }}" 
-                               class="bg-red-500 text-white px-4 py-2 rounded">Export PDF</a>
-                        </div>
-                    </div>
-
-               
-                    <table class="min-w-full table-auto">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-4 py-2">Image</th>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">Phone</th>
-                                <th class="px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($customers as $customer)
-                                <tr class="border-b">
-                                    <td class="px-4 py-2">
-                                        @if($customer->profile_image)
-                                            <img src="{{ asset('storage/' . $customer->profile_image) }}" 
-                                                 alt="{{ $customer->name }}" class="w-10 h-10 rounded-full">
-                                        @else
-                                            <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-2">{{ $customer->name }}</td>
-                                    <td class="px-4 py-2">{{ $customer->email }}</td>
-                                    <td class="px-4 py-2">{{ $customer->phone }}</td>
-                                    <td class="px-4 py-2">
-                                        <div class="flex gap-2">
-                                            <a href="{{ route('customers.show', $customer) }}" 
-                                               class="text-blue-600 hover:underline">View</a>
-                                            <a href="{{ route('customers.edit', $customer) }}" 
-                                               class="text-yellow-600 hover:underline">Edit</a>
-                                            @if(auth()->user()->role === 'admin')
-                                                <form method="POST" action="{{ route('customers.destroy', $customer) }}" 
-                                                      onsubmit="return confirm('Are you sure?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                                                </form>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">No customers found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    
-                    <div class="mt-4">
-                        {{ $customers->links() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> -->
 
 
 <x-app-layout>
@@ -164,22 +64,17 @@
                         </form>
 
                         <!-- Export Buttons -->
-                        <div class="flex gap-3">
-                            <a href="{{ route('customers.export', ['format' => 'csv']) }}" 
-                               class="inline-flex items-center px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                CSV
-                            </a>
-                            <a href="{{ route('customers.export', ['format' => 'pdf']) }}" 
-                               class="inline-flex items-center px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                </svg>
-                                PDF
-                            </a>
-                        </div>
+                     <!-- Export Buttons -->
+<div class="flex gap-3">
+  
+    <a href="{{ route('customers.export', ['format' => 'pdf'] + request()->all()) }}" 
+       class="inline-flex items-center px-5 py-2.5 bg-blue-500 hover:bg-pink-600 text-white font-semibold rounded-lg shadow-md transition duration-300 transform hover:scale-105">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+        </svg>
+         PDF
+    </a>
+</div>
                     </div>
                 </div>
 

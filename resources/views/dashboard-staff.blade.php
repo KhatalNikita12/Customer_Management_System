@@ -3,16 +3,19 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-bold text-3xl text-gray-900 leading-tight">
-                    📊 Dashboard
+                    👋 Dashboard
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">Welcome back, {{ Auth::user()->name }}!</p>
+                <p class="text-sm text-gray-600 mt-1">Welcome back, {{ Auth::user()->name }}! (Staff View)</p>
             </div>
-      
+          
         </div>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Role Badge -->
+       
+
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Total Customers Card -->
@@ -21,7 +24,12 @@
                         <div>
                             <p class="text-blue-100 text-sm font-medium uppercase tracking-wide">Total Customers</p>
                             <p class="text-4xl font-bold mt-2">{{ $totalCustomers }}</p>
-                            <p class="text-blue-100 text-xs mt-2">Active in system</p>
+                            <a href="{{ route('customers.index') }}" class="text-blue-100 text-xs mt-2 inline-flex items-center hover:text-white">
+                                View all
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
                         <div class="bg-white bg-opacity-30 p-4 rounded-full">
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +45,12 @@
                         <div>
                             <p class="text-green-100 text-sm font-medium uppercase tracking-wide">Total Orders</p>
                             <p class="text-4xl font-bold mt-2">{{ $totalOrders }}</p>
-                            <p class="text-green-100 text-xs mt-2">All time orders</p>
+                            <a href="{{ route('orders.index') }}" class="text-green-100 text-xs mt-2 inline-flex items-center hover:text-white">
+                                View all
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
                         <div class="bg-white bg-opacity-30 p-4 rounded-full">
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +66,7 @@
                         <div>
                             <p class="text-purple-100 text-sm font-medium uppercase tracking-wide">Total Revenue</p>
                             <p class="text-4xl font-bold mt-2">₹{{ number_format($totalRevenue, 0) }}</p>
-                            <p class="text-purple-100 text-xs mt-2">Completed orders</p>
+                            <p class="text-purple-100 text-xs mt-2">Completed orders only</p>
                         </div>
                         <div class="bg-white bg-opacity-30 p-4 rounded-full">
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,61 +84,60 @@
                         <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
-                        Orders by Status
+                        Orders Overview
                     </h3>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Pending -->
                         <div class="relative bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 border-2 border-yellow-200 transform transition duration-300 hover:scale-105">
-                            <div class="absolute top-4 right-4">
-                                <span class="flex h-3 w-3">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
-                                </span>
-                            </div>
                             <div class="flex items-center mb-2">
                                 <svg class="w-6 h-6 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <p class="text-yellow-800 text-sm font-semibold uppercase">Pending</p>
+                                <p class="text-yellow-800 text-sm font-semibold uppercase">Pending Orders</p>
                             </div>
                             <p class="text-5xl font-bold text-yellow-700">{{ $ordersByStatus['pending'] ?? 0 }}</p>
-                            <p class="text-yellow-600 text-sm mt-2">Orders waiting</p>
+                            <a href="{{ route('orders.index', ['status' => 'pending']) }}" class="text-yellow-600 text-sm mt-2 inline-flex items-center hover:text-yellow-800">
+                                View pending
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
 
                         <!-- Completed -->
                         <div class="relative bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-200 transform transition duration-300 hover:scale-105">
-                            <div class="absolute top-4 right-4">
-                                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
                             <div class="flex items-center mb-2">
                                 <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <p class="text-green-800 text-sm font-semibold uppercase">Completed</p>
+                                <p class="text-green-800 text-sm font-semibold uppercase">Completed Orders</p>
                             </div>
                             <p class="text-5xl font-bold text-green-700">{{ $ordersByStatus['completed'] ?? 0 }}</p>
-                            <p class="text-green-600 text-sm mt-2">Successfully done</p>
+                            <a href="{{ route('orders.index', ['status' => 'completed']) }}" class="text-green-600 text-sm mt-2 inline-flex items-center hover:text-green-800">
+                                View completed
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
 
                         <!-- Cancelled -->
                         <div class="relative bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border-2 border-red-200 transform transition duration-300 hover:scale-105">
-                            <div class="absolute top-4 right-4">
-                                <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
                             <div class="flex items-center mb-2">
                                 <svg class="w-6 h-6 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <p class="text-red-800 text-sm font-semibold uppercase">Cancelled</p>
+                                <p class="text-red-800 text-sm font-semibold uppercase">Cancelled Orders</p>
                             </div>
                             <p class="text-5xl font-bold text-red-700">{{ $ordersByStatus['cancelled'] ?? 0 }}</p>
-                            <p class="text-red-600 text-sm mt-2">Orders cancelled</p>
+                            <a href="{{ route('orders.index', ['status' => 'cancelled']) }}" class="text-red-600 text-sm mt-2 inline-flex items-center hover:text-red-800">
+                                View cancelled
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -183,9 +195,6 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                        </svg>
                                         <p class="mt-2">No customers yet</p>
                                     </td>
                                 </tr>

@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Order;
+use App\Models\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -15,21 +16,33 @@ class NewOrderNotification extends Notification
     {
     }
 
-    public function via(object $notifiable): array
+    public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail']; // Add 'database' for dashboard notifications
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('New Order Created: ' . $this->order->order_number)
-            ->line('A new order has been created.')
-            ->line('Order Number: ' . $this->order->order_number)
+            ->subject('New Order #' . $this->order->order_number)
+            ->line('A new order has been placed!')
+            ->line('**Order Details:**')
+            ->line('Order #: ' . $this->order->order_number)
             ->line('Customer: ' . $this->order->customer->name)
+            ->line('Email: ' . $this->order->customer->email)
             ->line('Amount: ₹' . number_format($this->order->amount, 2))
             ->line('Status: ' . ucfirst($this->order->status))
             ->action('View Order', url('/orders/' . $this->order->id))
-            ->line('Thank you for using ImpactGuru CRM!');
+            ->line('Thank you for using  CRM!');
+    }
+
+    public function toArray($notifiable)
+    {
+        return [
+            'order_id' => $this->order->id,
+            'order_number' => $this->order->order_number,
+            'customer_name' => $this->order->customer->name,
+            'amount' => $this->order->amount,
+        ];
     }
 }
