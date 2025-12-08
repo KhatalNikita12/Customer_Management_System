@@ -12,9 +12,13 @@
 
 ## 1️⃣ Clone & Setup
 https://github.com/KhatalNikita12/Customer_Management_System
+
 cd impactguru-mini-crm
-cp .env.example .env
+
+copy .env.example .env
+
 composer install
+
 npm install && npm run build
 
 
