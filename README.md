@@ -19,7 +19,7 @@ copy .env.example .env
 
 composer install
 
-npm install && npm run build
+npm install 
 
 
 
@@ -38,13 +38,12 @@ DB_PASSWORD=your_password
 
 
 ## 4️⃣ Launch
-php artisan key:generate
+# php artisan serve  
+in one terminal and another terminal run the command
 
-php artisan storage:link
+# npm run build
 
-php artisan serve
 
-text
 
 **✅ http://127.0.0.1:8000**
 
@@ -55,8 +54,7 @@ Staff: ramsharma12@gmail.com / Ram@12345
 
 
 
-## 🔧 Fix Issues
-php artisan optimize:clear
+
 
 ## Staff Dashboard
 <img width="1017" height="392" alt="image" src="https://github.com/user-attachments/assets/fc090a45-3043-4f98-9133-2a164b2a6377" />
