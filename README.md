@@ -43,6 +43,7 @@ in one terminal and another terminal run the command
 
 # npm run build
 
+# make sure the xampp is start and mysql database is connected
 
 
 **✅ http://127.0.0.1:8000**
