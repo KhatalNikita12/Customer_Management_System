@@ -31,13 +31,17 @@ import the database.sql file that provided
 
 ## 3️⃣ Configure .env
 DB_DATABASE=impactguru_crm
+
 DB_USERNAME=root
+
 DB_PASSWORD=your_password
 
 
 ## 4️⃣ Launch
 php artisan key:generate
+
 php artisan storage:link
+
 php artisan serve
 
 text
@@ -46,6 +50,7 @@ text
 
 ## 👨‍💼 Login
 Admin: admin123@gmail.com / Admin@123
+
 Staff: ramsharma12@gmail.com / Ram@12345
 
 
